@@ -1,0 +1,48 @@
+# Python
+
+*.pyc
+*.pyo
+
+.env
+
+# Node.js
+node_modules/
+.next/
+out/
+# Python virtual environment
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# FastAPI config files
+instance/
+.env
+.env.local
+
+
+# Node.js va Next.js fayllari
+node_modules/
+.next/
+out/
+dist/
+
+# Muhim fayllar
+.env
+.env.local
+.env.development
+.env.production
+
+# IDE va OS fayllari
+.vscode/
+.idea/
+.DS_Store
+
+# Log fayllar
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Git orqali yuklamaslik kerak bo‘lgan fayllar
+*.log
