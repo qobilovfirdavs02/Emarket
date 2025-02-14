@@ -7,7 +7,7 @@ class ProductCreate(BaseModel):
     description: str
     price: float
     stock: int
-    image_url: str | None = None  # Rasmlar majburiy emas
+    image_url: Optional[str] = None  # Rasmlar majburiy emas
 
 # Mahsulot ma'lumotlarini qaytarish uchun schema
 class ProductResponse(BaseModel):
@@ -16,8 +16,7 @@ class ProductResponse(BaseModel):
     description: str
     price: float
     stock: int
-    image_url: str | None = None
-
+    image_url: Optional[str] = None
     class Config:
         from_attributes = True  # SQLAlchemy obyektlarini moslashtirish
 
