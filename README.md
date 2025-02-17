@@ -5,7 +5,7 @@ This is a simple e-commerce project built with FastAPI for the backend, Next.js 
 ## Project Structure
 - **Backend**: FastAPI (Python)
 - **Frontend**: Next.js (React)
-- **Database**: PostgreSQL
+- **Database**: PostgreSQL 15+
 
 ## Setup and Installation
 
