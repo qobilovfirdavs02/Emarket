@@ -1,10 +1,23 @@
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { getUser } from "../../utils/storage"; // Foydalanuvchini olish uchun yordamchi funksiya
 
 export default function Cart() {
+  const router = useRouter();
   const [cart, setCart] = useState([]);
   const [total, setTotal] = useState(0);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
+    const storedUser = getUser(); // LocalStorage'dan foydalanuvchini olish
+    setUser(storedUser);
+
+    if (!storedUser) {
+      alert("⚠️ Savatchaga mahsulot qo‘shish yoki buyurtma berish uchun avval ro‘yxatdan o‘ting yoki tizimga kiring!");
+      router.push("/user/login"); // Foydalanuvchini login sahifasiga yo‘naltirish
+      return;
+    }
+
     fetch("http://localhost:8000/cart/")
       .then((res) => res.json())
       .then((data) => {
@@ -29,16 +42,16 @@ export default function Cart() {
 
   const handleOrder = async () => {
     if (cart.length === 0) {
-      alert("Savatchangiz bo‘sh!");
+      alert("⚠️ Savatchangiz bo‘sh!");
       return;
     }
 
     const orderData = {
-      user_id: 1,  // TODO: Haqiqiy user ID olish kerak (masalan, token orqali)
-      status: "pending",  // Buyurtma holati: "pending" (yangi buyurtma), "completed" yoki "cancelled" bo'lishi mumkin
+      user_id: user.id, // Haqiqiy foydalanuvchi ID'sini olish
+      status: "pending",
       items: cart.map((item) => ({
-        product_id: item.product?.id || 0,  // Mahsulot ID
-        quantity: item.quantity,            // Miqdor
+        product_id: item.product?.id || 0,
+        quantity: item.quantity,
       })),
     };
 
@@ -72,7 +85,7 @@ export default function Cart() {
             <p><b>Mahsulot:</b> {item.product?.name || "Noma’lum mahsulot"}</p>
             <p><b>Narxi:</b> {item.product?.price ? `${item.product.price} so‘m` : "Noma’lum narx"}</p>
             <p><b>Miqdor:</b> {item.quantity}</p>
-            <button onClick={() => handleRemove(item.id)}>❌ O‘chirish</button> {/* Moved button inside the map */}
+            <button onClick={() => handleRemove(item.id)}>❌ O‘chirish</button>
           </div>
         ))
       )}

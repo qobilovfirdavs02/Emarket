@@ -9,9 +9,20 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^2.5.1",
+    "js-cookie": "^3.0.5",
+    "local-storage": "^2.0.0",
     "next": "15.1.7",
+    "next-auth": "^4.24.11",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "styled-components": "^6.1.15"
+    "react-redux": "^9.2.0",
+    "react-router-dom": "^7.1.5",
+    "recoil": "^0.7.7",
+    "styled-components": "^6.1.15",
+    "zustand": "^5.0.3"
+  },
+  "devDependencies": {
+    "babel-plugin-styled-components": "^2.1.4"
   }
 }

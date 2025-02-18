@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
 import styled from "styled-components";
+import { removeUser } from "../../utils/storage";
+import { setUser } from "../../utils/storage";
 
 const Container = styled.div`
   display: flex;
@@ -8,7 +10,7 @@ const Container = styled.div`
   align-items: center;
   height: 100vh;
   border-radius: 20px;
-  background:rgb(109, 99, 99);
+  background: rgb(109, 99, 99);
 `;
 
 const LoginBox = styled.div`
@@ -80,6 +82,23 @@ const LoginButton = styled.button`
   }
 `;
 
+const RegisterButton = styled.button`
+  padding: 12px;
+  font-size: 16px;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-weight: bold;
+  margin-top: 10px;
+
+  &:hover {
+    background: #218838;
+  }
+`;
+
 export default function UserLogin() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -89,6 +108,7 @@ export default function UserLogin() {
   const handleLogin = async (e) => {
     e.preventDefault();
 
+    // API orqali login qilish
     const response = await fetch("http://localhost:8000/users/login", {
       method: "POST",
       headers: {
@@ -98,16 +118,25 @@ export default function UserLogin() {
     });
 
     if (response.ok) {
-      router.push("/user/dashboard");
+      const data = await response.json();
+      // Agar login muvaffaqiyatli bo‘lsa, userni saqlash
+      setUser(data.user); // Saqlash uchun utility funktsiyasini chaqiramiz
+      router.push("/user/dashboard");  // Dashboardga yo‘naltiramiz
     } else {
       const data = await response.json();
-      setError(data.detail || "Login xatolik!");
+      setError(data.detail || "Login xatolik!"); // Xatolikni ko‘rsatish
     }
   };
 
   return (
     <Container>
+      
       <LoginBox>
+      <a href="/">
+          <RegisterButton type="button">
+            Home
+          </RegisterButton>
+        </a>
         <Title>User Login</Title>
         <Form onSubmit={handleLogin}>
           <InputGroup>
@@ -132,10 +161,17 @@ export default function UserLogin() {
             />
           </InputGroup>
 
-          {error && <ErrorMessage>{error}</ErrorMessage>}
+          {error && <ErrorMessage>{error}</ErrorMessage>} {/* Xatolik bo‘lsa ko‘rsatish */}
 
           <LoginButton type="submit">Login</LoginButton>
         </Form>
+
+        {/* Register tugmasi */}
+        <a href="/user/register">
+          <RegisterButton type="button">
+            Register
+          </RegisterButton>
+        </a>
       </LoginBox>
     </Container>
   );

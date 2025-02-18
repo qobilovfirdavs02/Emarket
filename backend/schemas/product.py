@@ -8,6 +8,7 @@ class ProductCreate(BaseModel):
     price: float
     stock: int
     image_url: Optional[str] = None  # Rasmlar majburiy emas
+    category_id: int  # ✅ To‘g‘ri nomlangan!
 
 # Mahsulot ma'lumotlarini qaytarish uchun schema
 class ProductResponse(BaseModel):
@@ -22,8 +23,9 @@ class ProductResponse(BaseModel):
 
 
 class ProductUpdate(BaseModel):
-    name: Optional[str] = None
+    name: str
     description: Optional[str] = None
-    price: Optional[float] = None
-    stock: Optional[int] = None
+    price: float
+    stock: int
+    category_id: Optional[int] = None
     image_url: Optional[str] = None

@@ -106,3 +106,16 @@ def search_orders(status: str = None, user_id: int = None, db: Session = Depends
     orders = query.all()
     
     return orders
+
+
+
+
+@router.delete("/orders/{order_id}")
+def cancel_order(order_id: int, db: Session = Depends(get_db)):
+    order = db.query(Order).filter(Order.id == order_id).first()
+    if order:
+        db.delete(order)
+        db.commit()
+        return {"message": "Buyurtma bekor qilindi"}
+    else:
+        raise HTTPException(status_code=404, detail="Buyurtma topilmadi")

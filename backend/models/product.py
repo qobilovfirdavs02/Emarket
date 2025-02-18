@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String, Float, Text
+from sqlalchemy import Column, Integer, String, Float, ForeignKey
+from sqlalchemy.orm import relationship
 from database import Base
 
 class Product(Base):
@@ -6,7 +7,10 @@ class Product(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
-    description = Column(Text, nullable=True)
+    description = Column(String, nullable=False)
     price = Column(Float, nullable=False)
-    stock = Column(Integer, default=0)  # Mahsulot soni
-    image_url = Column(String, nullable=True)  # Rasmlar URL'si
+    stock = Column(Integer, nullable=False)
+    
+    category_id = Column(Integer, ForeignKey("categories.id"), nullable=False)  # ✅ ForeignKey qo‘shildi
+    image_url = Column(String, nullable=True)
+    category = relationship("Category", back_populates="products")  # ✅ Aloqa yaratildi

@@ -5,4 +5,5 @@ psycopg2
 pydantic
 passlib[bcrypt]
 pydantic[email]
+python-multipart
 
