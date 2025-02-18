@@ -1,57 +1,63 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import styled from "styled-components";
 
-const FormContainer = styled.div`
-  max-width: 400px;
+// 📌 Styled Components yaratamiz
+const Container = styled.div`
+  max-width: 500px;
   margin: 50px auto;
   padding: 20px;
   background: #fff;
-  border-radius: 8px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 `;
 
-const Title = styled.h2`
+const Title = styled.h1`
   text-align: center;
-  margin-bottom: 20px;
   color: #333;
+  margin-bottom: 20px;
 `;
 
-const StyledForm = styled.form`
+const Form = styled.form`
   display: flex;
   flex-direction: column;
+  gap: 15px;
 `;
 
-const StyledInput = styled.input`
+const Input = styled.input`
   padding: 10px;
-  margin-bottom: 15px;
-  border: 1px solid #ddd;
+  border: 1px solid #ccc;
   border-radius: 5px;
   font-size: 16px;
 `;
 
-const StyledTextArea = styled.textarea`
+const TextArea = styled.textarea`
   padding: 10px;
-  margin-bottom: 15px;
-  border: 1px solid #ddd;
+  border: 1px solid #ccc;
   border-radius: 5px;
   font-size: 16px;
-  resize: none;
   height: 80px;
 `;
 
-const SubmitButton = styled.button`
+const Select = styled.select`
   padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
   font-size: 16px;
-  background: #007bff;
+`;
+
+const Button = styled.button`
+  padding: 12px;
+  background: #28a745;
   color: white;
+  font-size: 16px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  transition: 0.3s;
-
+  transition: background 0.3s;
+  
   &:hover {
-    background: #0056b3;
+    background: #218838;
   }
 `;
 
@@ -66,9 +72,18 @@ export default function AddProduct() {
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
   const [stock, setStock] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
+  const [imageUrl, setImageUrl] = useState(""); // imageUrl o'zgaruvchisini aniqladik
+  const [category, setCategory] = useState("");
+  const [categories, setCategories] = useState([]);
   const [error, setError] = useState(null);
   const router = useRouter();
+
+  useEffect(() => {
+    fetch("http://localhost:8000/categories/")
+      .then((res) => res.json())
+      .then((data) => setCategories(data))
+      .catch((error) => console.error("Kategoriya olishda xatolik:", error));
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -78,8 +93,14 @@ export default function AddProduct() {
       description,
       price: parseFloat(price),
       stock: parseInt(stock),
-      image_url: imageUrl,
+      image_url: imageUrl, // imageUrl endi aniqlangan
+      category_id: parseInt(category),
     };
+
+    if (!productData.name || !productData.description || !productData.price || !productData.stock || !productData.category_id) {
+      setError("Barcha maydonlarni to'ldirganingizga ishonch hosil qiling!");
+      return;
+    }
 
     try {
       const response = await fetch("http://localhost:8000/products/", {
@@ -91,27 +112,65 @@ export default function AddProduct() {
       });
 
       if (!response.ok) {
-        throw new Error("Mahsulot qo‘shishda xatolik yuz berdi!");
+        const errorData = await response.json();
+        setError(errorData.detail || "Mahsulot qo‘shishda xatolik yuz berdi!");
+        return;
       }
 
-      router.push("/products");
+      router.push("/admin/product");
     } catch (error) {
-      setError(error.message);
+      setError("Serverga ulanishda xatolik yuz berdi!");
     }
   };
 
   return (
-    <FormContainer>
-      <Title>🛒 Yangi mahsulot qo‘shish</Title>
-      <StyledForm onSubmit={handleSubmit}>
-        <StyledInput type="text" placeholder="Mahsulot nomi" value={name} onChange={(e) => setName(e.target.value)} required />
-        <StyledTextArea placeholder="Tavsif" value={description} onChange={(e) => setDescription(e.target.value)} required />
-        <StyledInput type="number" placeholder="Narx ($)" value={price} onChange={(e) => setPrice(e.target.value)} required />
-        <StyledInput type="number" placeholder="Ombordagi miqdor" value={stock} onChange={(e) => setStock(e.target.value)} required />
-        <StyledInput type="text" placeholder="Rasm URL" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} />
+    <Container>
+      <Title>🛍️ Yangi Mahsulot Qo‘shish</Title>
+      <Form onSubmit={handleSubmit}>
+        <Input
+          type="text"
+          placeholder="Mahsulot nomi"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          required
+        />
+        <TextArea
+          placeholder="Tavsif"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          required
+        />
+        <Input
+          type="number"
+          placeholder="Narx"
+          value={price}
+          onChange={(e) => setPrice(e.target.value)}
+          required
+        />
+        <Input
+          type="number"
+          placeholder="Ombordagi miqdor"
+          value={stock}
+          onChange={(e) => setStock(e.target.value)}
+          required
+        />
+        <Input
+          type="file"
+          accept="image/*"
+          onChange={(e) => setImageUrl(URL.createObjectURL(e.target.files[0]))} // Rasmni tanlaganda URLni olish
+        />
+        {/* Kategoriya tanlash */}
+        <Select value={category} onChange={(e) => setCategory(e.target.value)} required>
+          <option value="">🔽 Kategoriya tanlang</option>
+          {categories.map((cat) => (
+            <option key={cat.id} value={cat.id}>
+              {cat.name}
+            </option>
+          ))}
+        </Select>
         {error && <ErrorMessage>{error}</ErrorMessage>}
-        <SubmitButton type="submit">✅ Mahsulot qo‘shish</SubmitButton>
-      </StyledForm>
-    </FormContainer>
+        <Button type="submit">✅ Qo‘shish</Button>
+      </Form>
+    </Container>
   );
 }

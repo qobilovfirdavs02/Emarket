@@ -79,6 +79,23 @@ const RegisterButton = styled.button`
   }
 `;
 
+const LoginButton = styled.button`
+  padding: 12px;
+  font-size: 16px;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-weight: bold;
+  margin-top: 10px;
+
+  &:hover {
+    background: #218838;
+  }
+`;
+
 export default function UserRegister() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -105,9 +122,18 @@ export default function UserRegister() {
     }
   };
 
+  const handleLoginRedirect = () => {
+    router.push("/user/login"); // Login sahifasiga yo'naltiramiz
+  };
+
   return (
     <Container>
       <RegisterBox>
+      <a href="/">
+          <RegisterButton type="button">
+            Home
+          </RegisterButton>
+        </a>
         <Title>User Register</Title>
         <Form onSubmit={handleRegister}>
           <InputGroup>
@@ -147,6 +173,11 @@ export default function UserRegister() {
 
           <RegisterButton type="submit">Register</RegisterButton>
         </Form>
+
+        {/* Login sahifasiga yo'naltiruvchi tugma */}
+        <LoginButton type="button" onClick={handleLoginRedirect}>
+          Already have an account? Login
+        </LoginButton>
       </RegisterBox>
     </Container>
   );

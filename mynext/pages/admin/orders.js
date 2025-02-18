@@ -35,7 +35,7 @@ export default function AdminOrders() {
     console.log("Yangi holat:", newStatus);
   
     // Yangi URL formatida so'rov yuborish
-    const response = await fetch(`http://localhost:8000/orders/${orderId}/status/${newStatus}`, {
+    const response = await fetch(`http://localhost:8000/orders/orders/${orderId}/status/${newStatus}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json"

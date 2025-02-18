@@ -15,8 +15,12 @@ const Header = () => {
             </li>
             <Link href="/products">Products</Link>
             <li>
-            <Link href="/cart">Cart</Link>
+            <Link href="/user/cart">Cart</Link>
           </li>
+          <li>
+            <Link href="/user/dashboard">ME</Link>
+          </li>
+          
         </ul>
       </nav>
     </header>

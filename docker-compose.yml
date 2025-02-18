@@ -1,18 +1,19 @@
-version: "3.8"
+version: '3.9'
 
 services:
   db:
     image: postgres:15
-    container_name: postgres_c
+    container_name: eshop_postgres
     restart: always
     environment:
-      POSTGRES_DB: shop_db
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
+      POSTGRES_DB: eshop_db
+      POSTGRES_USER: eshop_user
+      POSTGRES_PASSWORD: eshop_password
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
   backend:
     build:
@@ -22,7 +23,7 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - DATABASE_URL=postgresql://user:password@db:5432/shop_db
+      - DATABASE_URL=postgresql://eshop_user:eshop_password@db:5432/eshop_db
     depends_on:
       - db
 
